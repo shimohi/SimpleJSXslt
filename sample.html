@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js">/* */</script>
+<script type="text/javascript" src="SimpleJSXslt.js">/* */</script>
+<!--scriptタグ内に変換元のXMLを記述 -->
+<script type="text/xml" id="xml_example">
+<catalog>
+    <cd>
+        <title>Empire Burlesque</title>
+        <author>Bob Dylan</author>
+    </cd>
+    <cd>
+        <title>Last Stop this town</title>
+        <author>eels</author>
+    </cd>
+    <cd>
+        <title>カーマポリス</title>
+        <author>Radio Head</author>
+    </cd>
+</catalog>
+</script>
+<!-- scriptタグ内にXSLTを記述 srcでパスを指定した外部化も可  -->
+<script type="text/xml" id="xsl_example">
+<xsl:stylesheet version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:template match="/">
+        <h2>私の本棚</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>題名</th>
+                    <th>著者</th>
+                </tr>
+            </thead>
+            <tbody>
+                <xsl:for-each select="catalog/cd">
+                    <tr>
+                        <td>
+                            <xsl:value-of select="title" />
+                        </td>
+                        <td>
+                            <xsl:value-of select="author" />
+                        </td>
+                    </tr>
+                </xsl:for-each>
+            </tbody>
+        </table>
+    </xsl:template>
+</xsl:stylesheet> 
+</script>
+<script>
+$(window).on('load',function(){
+        $('#xml_example').transform($('#xsl_example')[0]).appendTo('#example');
+        });
+</script>
+</head>
+<body>
+<div id="example" />
+    </body>
+    </html>
