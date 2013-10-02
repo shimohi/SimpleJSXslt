@@ -7,18 +7,18 @@
 <!--scriptタグ内に変換元のXMLを記述 -->
 <script type="text/xml" id="xml_example">
 <catalog>
-    <cd>
-        <title>Empire Burlesque</title>
-        <author>Bob Dylan</author>
-    </cd>
-    <cd>
-        <title>Last Stop this town</title>
-        <author>eels</author>
-    </cd>
-    <cd>
-        <title>カーマポリス</title>
-        <author>Radio Head</author>
-    </cd>
+    <book>
+        <title>オーデュポンの祈り</title>
+        <author>伊坂幸太郎</author>
+    </book>
+    <book>
+        <title>スロウハイツの神様</title>
+        <author>辻村深月</author>
+    </book>
+    <book>
+        <title>悼む人</title>
+        <author>天童荒太</author>
+    </book>
 </catalog>
 </script>
 <!-- scriptタグ内にXSLTを記述 srcでパスを指定した外部化も可  -->
@@ -35,7 +35,7 @@
                 </tr>
             </thead>
             <tbody>
-                <xsl:for-each select="catalog/cd">
+                <xsl:for-each select="catalog/book">
                     <tr>
                         <td>
                             <xsl:value-of select="title" />
