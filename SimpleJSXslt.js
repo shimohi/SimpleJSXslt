@@ -136,24 +136,61 @@ shimohi.xsl.UNDEFINED='undefined';
 	 * @param xsltSource xslt文書(Domオブジェクト or XML文字列 or URL or scriptタグ)
 	 */
 	function transform(xmlSource,xslSource){
+
 		//DOM生成
 		var xml = loadXML(xmlSource);
 		var xsl = loadXML(xslSource);
+
 		//IEの場合
 		if(typeof XSLTProcessor == shimohi.xsl.UNDEFINED){
-		//if (window.ActiveXObject){
-			xmlStr=xml.transformNode(xsl);
-			var div = document.createElement('div');
-			document.body.appendChild(div);
-			div.innerHTML=xmlStr;
-			var result = div.removeChild(div.firstChild);
-			document.body.removeChild(div);
-			return div;
+			return transformForIE(xml,xsl);
 		}
 		xsltProcessor=new XSLTProcessor();
 		xsltProcessor.importStylesheet(xsl);
 		return  xsltProcessor.transformToFragment(xml,document);
 	}
+	
+	/**
+	 * IE向けの対応
+	 */
+	function transformForIE(xml,xsl){
+		try{
+			// IE6, IE7, IE8
+			if (typeof (xml.transformNode) != "undefined") { 
+				return createTransformedNode(xml.transformNode(xsl));
+			}
+			
+            var xslt = new ActiveXObject("Msxml2.XSLTemplate");
+            var xslDoc = new ActiveXObject("Msxml2.FreeThreadedDOMDocument");
+            var xslStr = xsl.xml;
+
+            //IE11向けの対応
+            if(xslStr == null){
+            	var xs = new XMLSerializer();
+            	xslStr = xs.serializeToString(xsl);
+            }
+            xslDoc.loadXML(xslStr);
+            xslt.stylesheet = xslDoc;
+            var xslProc = xslt.createProcessor();
+            xslProc.input = xml;
+            xslProc.transform();
+
+            return createTransformedNode(xslProc.output);
+		}
+		catch(e){
+		}
+	}
+
+	/**
+	 * XMLの文字列からDOMノードを生成して返す。
+	 */
+	function createTransformedNode(xmlStr){
+		var div = document.createElement('div');
+		document.body.appendChild(div);
+		div.innerHTML=xmlStr;
+		return document.body.removeChild(div);
+	}
+
 	var ns=shimohi.xsl;
 	ns.loadXML=loadXML;
 	ns.transform = transform;
